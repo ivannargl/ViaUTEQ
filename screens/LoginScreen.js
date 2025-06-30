@@ -56,21 +56,22 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    // Simulación de credenciales
-    const mockEmail = 'p@uteq.edu.mx';
-    const mockPassword = 'Admin123*';
-
-    if (email !== mockEmail || password !== mockPassword) {
+    // Solo cambié aquí para redirigir según usuario
+    if (email.toLowerCase() === 'admin@uteq.edu.mx' && password === 'Admin123.') {
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        navigation.navigate('InicioAdm'); // Redirige a Admin
+      }, 2000);
+    } else if (email.toLowerCase() === 'usuario@uteq.edu.mx' && password === 'usuario123.') {
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        navigation.navigate('MenuRutas'); // Redirige a Usuario
+      }, 2000);
+    } else {
       showErrorAlert('Correo o contraseña incorrecta.');
-      return;
     }
-
-    setShowSuccessModal(true);
-
-    setTimeout(() => {
-      setShowSuccessModal(false);
-      navigation.navigate('MenuRutas');
-    }, 2000);
   };
 
   return (
@@ -98,7 +99,6 @@ export default function LoginScreen({ navigation }) {
           autoCapitalize="none"
         />
 
-        {/* Contenedor para input de contraseña + icono */}
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Contraseña"

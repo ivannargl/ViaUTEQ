@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
   Text,
   Modal,
   Pressable,
   SafeAreaView,
   useWindowDimensions,
-  Platform,
 } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import Nav from './Nav';
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
   const toRad = (x) => (x * Math.PI) / 180;
@@ -31,9 +30,9 @@ function AlertModal({ visible, onClose, message, width }) {
       <Pressable style={styles.alertOverlay} onPress={onClose}>
         <View style={[styles.alertBox, { width: width * 0.85 }]}>
           <Text style={styles.alertText}>{message}</Text>
-          <TouchableOpacity onPress={onClose} style={styles.alertButton}>
+          <Pressable onPress={onClose} style={styles.alertButton}>
             <Text style={styles.alertButtonText}>Cerrar</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </Pressable>
     </Modal>
@@ -41,13 +40,12 @@ function AlertModal({ visible, onClose, message, width }) {
 }
 
 export default function Mapa({ route }) {
+  const navigation = useNavigation();
   const { lugar } = route.params || { lugar: { nombre: 'Entrada', descripcion: '' } };
   const [menuVisible, setMenuVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
   const { width } = useWindowDimensions();
-  const isTablet = width >= 600;
 
   const coordenadas = {
     Entrada: { latitude: 20.6532215, longitude: -100.4040249 },
@@ -73,12 +71,6 @@ export default function Mapa({ route }) {
   );
 
   const infoRuta = `Inicio: Entrada → Fin: ${lugar.nombre}`;
-
-  function mostrarAlerta(mensaje) {
-    setAlertMessage(mensaje);
-    setAlertVisible(true);
-    setMenuVisible(false);
-  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -115,77 +107,15 @@ export default function Mapa({ route }) {
           />
         </MapView>
 
-        {/* NAV */}
-        <View
-          style={[
-            styles.navContainer,
-            {
-              paddingHorizontal: isTablet ? 30 : width * 0.06,
-              height: isTablet ? 75 : 65,
-              maxWidth: isTablet ? 720 : '100%',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            },
-          ]}
-        >
-          <View style={styles.navTopRow}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={[
-                styles.infoRutaText,
-                { maxWidth: isTablet ? width * 0.68 : width * 0.58, fontSize: isTablet ? 19 : 16 },
-              ]}
-            >
-              {infoRuta}
-            </Text>
-
-            <TouchableOpacity
-              style={[
-                styles.menuButton,
-                { padding: isTablet ? 15 : 12, borderRadius: isTablet ? 15 : 13 },
-              ]}
-              onPress={() => setMenuVisible(true)}
-              activeOpacity={0.75}
-              accessibilityLabel="Abrir menú"
-            >
-              <FontAwesome name="bars" size={isTablet ? 32 : 28} color="#34495e" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.distanciaRow}>
-            <Text style={[styles.distanciaText, { fontSize: isTablet ? 16 : 14 }]}>
-              Distancia: <Text style={{ fontWeight: '700' }}>{distancia} m</Text>
-            </Text>
-          </View>
-        </View>
-
-        <Modal
-          visible={menuVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setMenuVisible(false)}
-        >
-          <Pressable style={styles.modalOverlay} onPress={() => setMenuVisible(false)}>
-            <View style={[styles.modalView, { width: isTablet ? 420 : width * 0.9 }]}>
-              {[
-                { icon: 'logout', text: 'Cerrar sesión', alert: 'Has cerrado sesión correctamente.' },
-                { icon: 'edit', text: 'Editar perfil', alert: 'Aquí puedes editar tu perfil.' },
-                { icon: 'menu', text: 'Menú', alert: 'Accede al menú principal.' },
-              ].map(({ icon, text, alert }) => (
-                <TouchableOpacity
-                  key={text}
-                  style={styles.menuItem}
-                  onPress={() => mostrarAlerta(alert)}
-                  activeOpacity={0.75}
-                >
-                  <MaterialIcons name={icon} size={24} color="#34495e" style={styles.menuIcon} />
-                  <Text style={styles.menuItemText}>{text}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </Pressable>
-        </Modal>
+        {/* Nav encima del mapa */}
+        <Nav
+          infoRuta={infoRuta}
+          distancia={distancia}
+          menuVisible={menuVisible}
+          setMenuVisible={setMenuVisible}
+          nombreUsuario={'Prueba'}
+          fotoPerfil={'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true'}
+        />
 
         {/* Modal alerta */}
         <AlertModal
@@ -204,102 +134,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fdfdfd',
   },
-  container: { flex: 1 },
-  mapa: { flex: 1 },
-
-  navContainer: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 35,
-    left: 10,
-    right: 10,
-    backgroundColor: '#E1E1E1',
-    borderRadius: 18,
-    paddingVertical: 10,
-
-    shadowColor: '#34495e',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 10,
-    zIndex: 15000,
-  },
-
-  navTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-
-  infoRutaText: {
-    fontWeight: '700',
-    color: '#34495e',
-  },
-
-  distanciaRow: {
-    borderTopColor: '#ecf0f1',
-    borderTopWidth: 1,
-    paddingTop: 4,
-    alignItems: 'center',
-    addingBottom: 9,
-  },
-
-  distanciaText: {
-    color: '#34495e',
-    fontWeight: '600',
-    textAlign: "center",
-  },
-
-  menuButton: {
-    backgroundColor: '#dfe6e9',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#34495e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-
-  modalOverlay: {
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.25)',
-    justifyContent: 'flex-start',
-    paddingTop: Platform.OS === 'ios' ? 95 : 75,
-    paddingHorizontal: 30,
+    position: 'relative', // para posicionar el Nav absoluto
   },
-
-  modalView: {
-    backgroundColor: 'white',
-    borderRadius: 18,
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    shadowColor: '#34495e',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 15,
-    elevation: 14,
-    alignSelf: 'center',
+  mapa: {
+    flex: 1,
   },
-
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    borderBottomColor: '#ecf0f1',
-    borderBottomWidth: 1,
-  },
-
-  menuIcon: {
-    marginRight: 18,
-  },
-
-  menuItemText: {
-    fontSize: 19,
-    color: '#34495e',
-    fontWeight: '700',
-  },
-
   alertOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.28)',
@@ -307,7 +148,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 40,
   },
-
   alertBox: {
     backgroundColor: 'white',
     padding: 32,
@@ -319,7 +159,6 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 16,
   },
-
   alertText: {
     fontSize: 18,
     marginBottom: 30,
@@ -327,7 +166,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
   },
-
   alertButton: {
     backgroundColor: '#dfe6e9',
     paddingVertical: 14,
@@ -338,7 +176,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
   },
-
   alertButtonText: {
     color: '#34495e',
     fontWeight: '800',

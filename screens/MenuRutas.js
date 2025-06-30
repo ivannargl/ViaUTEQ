@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,10 @@ import {
   Image,
   TouchableOpacity,
   useWindowDimensions,
+  Platform,
+  StatusBar,
 } from 'react-native';
+import Nav from '../screens/Nav'; // Ajusta la ruta si es necesario
 
 const lugares = [
   { id: '1', nombre: 'Entrada', descripcion: 'Acceso principal al campus', imagen: 'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/Entrada.jpg?raw=true' },
@@ -25,39 +28,60 @@ const lugares = [
 export default function MenuRutas({ navigation }) {
   const { width } = useWindowDimensions();
   const itemWidth = (width - 30) / 2;
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  // Datos de usuario simulados
+  const nombreUsuario = 'Prueba';
+  const fotoPerfil = 'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true';
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>¿A dónde deseas ir?</Text>
-      <FlatList
-        data={lugares}
-        numColumns={2}
-        contentContainerStyle={styles.flatListContainer}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.card, { width: itemWidth }]}
-            onPress={() => navigation.navigate('Mapa', { lugar: item })}
-          >
-            <Image
-              source={{ uri: item.imagen }}
-              style={styles.image}
-              resizeMode="cover"
-            />
-            <Text style={styles.nombre}>{item.nombre}</Text>
-            <Text style={styles.descripcion}>{item.descripcion}</Text>
-          </TouchableOpacity>
-        )}
+    <View style={styles.fullScreen}>
+      {/* Nav flotante */}
+      <Nav
+        nombreUsuario={nombreUsuario}
+        fotoPerfil={fotoPerfil}
+        menuVisible={menuVisible}
+        setMenuVisible={setMenuVisible}
       />
+
+      {/* Contenido debajo del Nav */}
+      <View style={styles.container}>
+        <Text style={styles.title}>¿A dónde deseas ir?</Text>
+
+        <FlatList
+          data={lugares}
+          numColumns={2}
+          contentContainerStyle={styles.flatListContainer}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[styles.card, { width: itemWidth }]}
+              onPress={() => navigation.navigate('Mapa', { lugar: item })}
+            >
+              <Image
+                source={{ uri: item.imagen }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+              <Text style={styles.nombre}>{item.nombre}</Text>
+              <Text style={styles.descripcion}>{item.descripcion}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
   container: {
     flex: 1,
-    paddingTop: 50,
-    backgroundColor: '#f2f2f2',
+    paddingTop: 110, // Espacio para que no choque con el Nav
   },
   title: {
     fontSize: 22,
