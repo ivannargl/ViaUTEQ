@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -72,17 +72,25 @@ export default function Mapa({ route }) {
 
   const infoRuta = `Inicio: Entrada → Fin: ${lugar.nombre}`;
 
+  // Ref para el MapView
+  const mapRef = useRef(null);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.fitToCoordinates([entrada, destino], {
+        edgePadding: { top: 100, right: 50, bottom: 100, left: 50 },
+        animated: true,
+      });
+    }
+  }, [entrada, destino]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <MapView
+          ref={mapRef}
           style={styles.mapa}
-          initialRegion={{
-            latitude: (entrada.latitude + destino.latitude) / 2,
-            longitude: (entrada.longitude + destino.longitude) / 2,
-            latitudeDelta: 0.003,
-            longitudeDelta: 0.003,
-          }}
+          mapType="satellite"  // aquí pones vista satelital
           showsUserLocation={true}
           showsMyLocationButton={true}
         >
@@ -114,7 +122,9 @@ export default function Mapa({ route }) {
           menuVisible={menuVisible}
           setMenuVisible={setMenuVisible}
           nombreUsuario={'Prueba'}
-          fotoPerfil={'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true'}
+          fotoPerfil={
+            'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true'
+          }
         />
 
         {/* Modal alerta */}

@@ -21,14 +21,9 @@ export default function HomeScreen({ navigation }) {
       <Text style={styles.title}>VíaUTEQ</Text>
       <Text style={styles.subtitle}>Tu app de transporte inteligente</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-        <Ionicons name="log-in-outline" size={22} color="#0077b6" />
-        <Text style={styles.buttonText}>Iniciar sesión</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register')}>
-        <Ionicons name="person-add-outline" size={22} color="#fff" />
-        <Text style={styles.registerText}>Regístrate</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MenuRutas')}>
+        <Ionicons name="arrow-forward-circle-outline" size={24} color="#0077b6" />
+        <Text style={styles.buttonText}>Iniciar</Text>
       </TouchableOpacity>
 
       <StatusBar style="light" />
@@ -81,22 +76,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#0077b6',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  registerButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginTop: 20,
-    borderColor: '#fff',
-    borderWidth: 2,
-    paddingVertical: 12,
-    paddingHorizontal: 36,
-    borderRadius: 30,
-  },
-  registerText: {
-    color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
   },

@@ -9,16 +9,26 @@ import {
   Dimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Nav from '../Nav';
+import Nav from '../Nav'; // Asegúrate que la ruta sea correcta
 
-const InicioAdm = () => {
+const InicioAdm = ({ navigation }) => {
   const [menuVisible, setMenuVisible] = useState(false);
 
-  const handleRutas = () => {};
-  const handleConsultarUbicacion = () => {};
-  const handleConsultarBateria = () => {};
-  const handleLlamarHome = () => {};
-  const handleUsuarios = () => {};
+  const handleRutas = () => {
+    navigation.navigate('Rutas');
+  };
+  const handleConsultarUbicacion = () => {
+    navigation.navigate('Ubicacion');
+  };
+  const handleConsultarBateria = () => {
+    navigation.navigate('Bateria');
+  };
+  const handleLlamarHome = () => {
+    navigation.navigate('Llamar');
+  };
+  const handleUsuarios = () => {
+    navigation.navigate('Usuarios');
+  };
 
   const screenWidth = Dimensions.get('window').width;
   const buttonWidth = (screenWidth - 100) / 2;
@@ -27,9 +37,10 @@ const InicioAdm = () => {
     <SafeAreaView style={styles.container}>
       <Nav
         nombreUsuario="Administrador"
-        fotoPerfil="https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true"
+        fotoPerfil="https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/default-profile.jpg?raw=true"
         menuVisible={menuVisible}
         setMenuVisible={setMenuVisible}
+        tipoUsuario={1} // 👈 Aquí indicamos que es ADMIN
       />
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -43,22 +54,25 @@ const InicioAdm = () => {
             <Text style={styles.buttonText}>Rutas</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleConsultarUbicacion}>
+          <TouchableOpacity
+            style={[styles.button, { width: buttonWidth }]}
+            onPress={handleConsultarUbicacion}
+          >
             <Ionicons name="location-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Ubicación</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleConsultarBateria}>
+          <TouchableOpacity
+            style={[styles.button, { width: buttonWidth }]}
+            onPress={handleConsultarBateria}
+          >
             <Ionicons name="battery-half-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Batería</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLlamarHome}>
-            <Ionicons name="call-outline" size={24} color="#fff" />
-            <Text style={styles.buttonText}>Llamar</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleUsuarios}>
+          <TouchableOpacity
+            style={[styles.button, { width: buttonWidth }]}
+            onPress={handleUsuarios}
+          >
             <Ionicons name="people-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Usuarios</Text>
           </TouchableOpacity>

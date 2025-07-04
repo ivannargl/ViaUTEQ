@@ -9,8 +9,9 @@ import {
   useWindowDimensions,
   Platform,
   StatusBar,
+  TextInput,
 } from 'react-native';
-import Nav from '../screens/Nav'; // Ajusta la ruta si es necesario
+import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
 
 const lugares = [
   { id: '1', nombre: 'Entrada', descripcion: 'Acceso principal al campus', imagen: 'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/Entrada.jpg?raw=true' },
@@ -28,46 +29,63 @@ const lugares = [
 export default function MenuRutas({ navigation }) {
   const { width } = useWindowDimensions();
   const itemWidth = (width - 30) / 2;
-  const [menuVisible, setMenuVisible] = useState(false);
+  const [busqueda, setBusqueda] = useState('');
 
-  // Datos de usuario simulados
-  const nombreUsuario = 'Prueba';
-  const fotoPerfil = 'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true';
+  const lugaresFiltrados = lugares.filter((lugar) =>
+    lugar.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
 
   return (
     <View style={styles.fullScreen}>
-      {/* Nav flotante */}
-      <Nav
-        nombreUsuario={nombreUsuario}
-        fotoPerfil={fotoPerfil}
-        menuVisible={menuVisible}
-        setMenuVisible={setMenuVisible}
-      />
-
-      {/* Contenido debajo del Nav */}
-      <View style={styles.container}>
+      <View style={styles.header}>
         <Text style={styles.title}>¿A dónde deseas ir?</Text>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Ionicons name="person-circle-outline" size={30} color="#0077b6" />
+        </TouchableOpacity>
+      </View>
 
-        <FlatList
-          data={lugares}
-          numColumns={2}
-          contentContainerStyle={styles.flatListContainer}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[styles.card, { width: itemWidth }]}
-              onPress={() => navigation.navigate('Mapa', { lugar: item })}
-            >
-              <Image
-                source={{ uri: item.imagen }}
-                style={styles.image}
-                resizeMode="cover"
-              />
-              <Text style={styles.nombre}>{item.nombre}</Text>
-              <Text style={styles.descripcion}>{item.descripcion}</Text>
-            </TouchableOpacity>
-          )}
-        />
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Buscar edificio..."
+            placeholderTextColor="#999"
+            value={busqueda}
+            onChangeText={setBusqueda}
+          />
+        </View>
+
+        {lugaresFiltrados.length === 0 ? (
+          <View style={styles.noResultContainer}>
+            <Ionicons name="alert-circle-outline" size={50} color="#999" />
+            <Text style={styles.noDisponible}>Edificio no disponible</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={lugaresFiltrados}
+            numColumns={2}
+            contentContainerStyle={styles.flatListContainer}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[styles.card, { width: itemWidth }]}
+                onPress={() => navigation.navigate('Mapa', { lugar: item })}
+              >
+                <Image
+                  source={{ uri: item.imagen }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+                <Text style={styles.nombre}>{item.nombre}</Text>
+                <Text style={styles.descripcion}>{item.descripcion}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
       </View>
     </View>
   );
@@ -79,19 +97,52 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
-  container: {
-    flex: 1,
-    paddingTop: 110, // Espacio para que no choque con el Nav
+  header: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 10,
+    position: 'relative',
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#0077b6',
     textAlign: 'center',
+  },
+  loginButton: {
+    position: 'absolute',
+    right: 15,
+    top: 22,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 15,
+    paddingTop: 10,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  searchIcon: {
+    marginRight: 6,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
   },
   flatListContainer: {
-    paddingHorizontal: 10,
     paddingBottom: 20,
   },
   card: {
@@ -101,6 +152,10 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
   },
   image: {
     width: '100%',
@@ -119,5 +174,15 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
     marginTop: 4,
+  },
+  noResultContainer: {
+    marginTop: 40,
+    alignItems: 'center',
+  },
+  noDisponible: {
+    fontSize: 16,
+    color: '#999',
+    marginTop: 10,
+    fontStyle: 'italic',
   },
 });

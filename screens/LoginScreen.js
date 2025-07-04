@@ -39,35 +39,37 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleLogin = () => {
-    if (!validateEmail(email)) {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
+
+    if (!validateEmail(cleanEmail)) {
       showErrorAlert('Introduce un correo electrónico válido.');
       return;
     }
 
-    if (!validatePassword(password)) {
+    if (!validatePassword(cleanPassword)) {
       showErrorAlert(
         'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.'
       );
       return;
     }
 
-    if (hasSQLInjection(email) || hasSQLInjection(password)) {
+    if (hasSQLInjection(cleanEmail) || hasSQLInjection(cleanPassword)) {
       showErrorAlert('Entrada sospechosa detectada. Revisa tu información.');
       return;
     }
 
-    // Solo cambié aquí para redirigir según usuario
-    if (email.toLowerCase() === 'admin@uteq.edu.mx' && password === 'Admin123.') {
+    if (cleanEmail === 'admin@uteq.edu.mx' && cleanPassword === 'Admin123.') {
       setShowSuccessModal(true);
       setTimeout(() => {
         setShowSuccessModal(false);
-        navigation.navigate('InicioAdm'); // Redirige a Admin
+        navigation.navigate('InicioAdm');
       }, 2000);
-    } else if (email.toLowerCase() === 'usuario@uteq.edu.mx' && password === 'usuario123.') {
+    } else if (cleanEmail === 'usuario@uteq.edu.mx' && cleanPassword === 'Usuario123.') {
       setShowSuccessModal(true);
       setTimeout(() => {
         setShowSuccessModal(false);
-        navigation.navigate('MenuRutas'); // Redirige a Usuario
+        navigation.navigate('MenuRutas');
       }, 2000);
     } else {
       showErrorAlert('Correo o contraseña incorrecta.');
