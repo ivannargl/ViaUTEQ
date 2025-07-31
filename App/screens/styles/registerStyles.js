@@ -1,0 +1,103 @@
+import { StyleSheet } from 'react-native';
+
+export default StyleSheet.create({
+    container: {
+    flex: 1,
+    backgroundColor: '#caf0f8',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: '#ffffffaa',
+    padding: 10,
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 25,
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  icon: {
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#0077b6',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#e0f7fa',
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 15,
+    fontSize: 16,
+    color: '#0077b6',
+  },
+  button: {
+    backgroundColor: '#00b4d8',
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  link: {
+    marginTop: 15,
+    color: '#0077b6',
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: '#00000099',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  alertBox: {
+    backgroundColor: '#fff',
+    padding: 25,
+    borderRadius: 15,
+    width: '80%',
+    alignItems: 'center',
+  },
+  alertText: {
+    marginTop: 15,
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+  },
+  alertButton: {
+    marginTop: 20,
+    backgroundColor: '#0077b6',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  successButton: {
+    backgroundColor: '#2e7d32',
+  },
+  alertButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+});

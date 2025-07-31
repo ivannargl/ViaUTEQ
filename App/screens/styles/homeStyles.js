@@ -1,0 +1,67 @@
+import { StyleSheet } from 'react-native';
+
+export default StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    logo: {
+        width: 125,
+        height: 125,
+        marginBottom: 30,
+        borderRadius: 10,
+        backgroundColor: '#ffffffaa',
+        padding: 10,
+    },
+    title: {
+        fontSize: 60,
+        fontWeight: 'bold',
+        color: '#fff',
+        textShadowColor: '#0006',
+        textShadowOffset: { width: 1, height: 2 },
+        textShadowRadius: 4,
+    },
+    subtitle: {
+        fontSize: 20,
+        color: '#e0f7fa',
+        marginBottom: 50,
+        fontStyle: 'italic',
+    },
+    button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        backgroundColor: '#fff',
+        paddingVertical: 14,
+        paddingHorizontal: 40,
+        borderRadius: 30,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 5,
+        elevation: 6,
+    },
+    buttonText: {
+        color: '#0077b6',
+        fontWeight: 'bold',
+        fontSize: 18,
+    },
+    registerButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        marginTop: 20,
+        borderColor: '#fff',
+        borderWidth: 2,
+        paddingVertical: 12,
+        paddingHorizontal: 36,
+        borderRadius: 30,
+    },
+    registerText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 18,
+    },
+});
