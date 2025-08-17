@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,25 +9,80 @@ import {
   Dimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Nav from '../Nav';
+import Nav from '../Client/Nav';
+import { AuthContext } from '../../AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// Importing the modals
+import CrudRutas from '../Modals/Admin/CrudRutas';
+import CrudUsuarios from '../Modals/Admin/CrudUsuarios';
+import CrudLugares from '../Modals/Admin/CrudLugares';
+import { Alert } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const InicioAdm = () => {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [modalRutasVisible, setModalRutasVisible] = useState(false);
+  const [modalUsuariosVisible, setModalUsuariosVisible] = useState(false);
+  const [modalLugaresVisible, setModalLugaresVisible] = useState(false);
 
-  const handleRutas = () => {};
-  const handleConsultarUbicacion = () => {};
-  const handleConsultarBateria = () => {};
-  const handleLlamarHome = () => {};
-  const handleUsuarios = () => {};
+  const handleRutas = () => setModalRutasVisible(true);
+  const handleConsultarUbicacion = () => setModalLugaresVisible(true);
+  const handleConsultarBateria = () => { };
+  const handleLlamarHome = () => { };
+  const handleUsuarios = () => setModalUsuariosVisible(true);
 
   const screenWidth = Dimensions.get('window').width;
   const buttonWidth = (screenWidth - 100) / 2;
+  const { usuario } = useContext(AuthContext);
+  const [nombreUsuario, setNombreUsuario] = useState('Usuario');
+  const [fotoPerfil, setFotoPerfil] = useState(
+    'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true'
+  );
+
+  const navigation = useNavigation();
+
+
+  //Cragar usario desde AsyncStorage
+  useFocusEffect(
+  useCallback(() => {
+    const verificarSesion = async () => {
+      try {
+        const usuarioGuardado = await AsyncStorage.getItem('usuario');
+        if (!usuarioGuardado) {
+          Alert.alert(
+            'Sesión cerrada',
+            'Debes iniciar sesión para acceder a esta pantalla.',
+            [
+              {
+                text: 'Ir al login',
+                onPress: () => navigation.replace('LoginScreen'),
+              },
+            ],
+            { cancelable: false }
+          );
+        } else {
+          const usuario = JSON.parse(usuarioGuardado);
+          setNombreUsuario(usuario.nombre || 'Usuario');
+          setFotoPerfil(
+            usuario.foto_url ||
+            'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true'
+          );
+        }
+      } catch (error) {
+        console.error('Error al verificar sesión:', error);
+      }
+    };
+
+    verificarSesion();
+  }, [])
+);
+
 
   return (
     <SafeAreaView style={styles.container}>
       <Nav
-        nombreUsuario="Administrador"
-        fotoPerfil="https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true"
+        nombreUsuario={nombreUsuario}
+        fotoPerfil={fotoPerfil}
         menuVisible={menuVisible}
         setMenuVisible={setMenuVisible}
       />
@@ -38,17 +93,18 @@ const InicioAdm = () => {
         <Text style={styles.highlight}>via uteq</Text>
 
         <View style={styles.buttonsGrid}>
+          {/* Abrir modal CrudRutas */}
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleRutas}>
             <Ionicons name="map-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Rutas</Text>
           </TouchableOpacity>
-
+          {/* Abrir modal CrudLugares */}
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleConsultarUbicacion}>
             <Ionicons name="location-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Ubicación</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleConsultarBateria}>
+          {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleConsultarBateria}>
             <Ionicons name="battery-half-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Batería</Text>
           </TouchableOpacity>
@@ -56,14 +112,17 @@ const InicioAdm = () => {
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLlamarHome}>
             <Ionicons name="call-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Llamar</Text>
-          </TouchableOpacity>
-
+          </TouchableOpacity> */}
+          {/* Abrir modal CrudUsuarios */}
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleUsuarios}>
             <Ionicons name="people-outline" size={24} color="#fff" />
             <Text style={styles.buttonText}>Usuarios</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <CrudRutas visible={modalRutasVisible} onClose={() => setModalRutasVisible(false)} />
+      <CrudUsuarios visible={modalUsuariosVisible} onClose={() => setModalUsuariosVisible(false)} />
+      <CrudLugares visible={modalLugaresVisible} onClose={() => setModalLugaresVisible(false)} />
     </SafeAreaView>
   );
 };

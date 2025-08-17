@@ -4,17 +4,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import LoginScreen from './screens/LoginScreen';   
 import RegisterScreen from './screens/RegisterScreen';
-import MenuRutas from './screens/MenuRutas'; 
+import MenuRutas from './screens/Client/MenuRutas'; 
 import HomeScreen from './screens/HomeScreen';        
-import Mapa from './screens/Mapa';
-import Perfil from './screens/Perfil';
-import Nav from './screens/Nav';
+import Mapa from './screens/Client/Mapa';
+import Perfil from './screens/Client/Perfil';
+import Nav from './screens/Client/Nav';
 import InicioAdm from './screens/Admin/InicioAdm';
+import { AuthProvider } from './AuthContext'; 
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <AuthProvider>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
@@ -27,5 +29,6 @@ export default function App() {
         <Stack.Screen name="InicioAdm" component={InicioAdm} />
       </Stack.Navigator>
     </NavigationContainer>
+    </AuthProvider>
   );
 }

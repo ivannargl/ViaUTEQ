@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import styles from './styles/homeStyles';
+import styles from '../styles/homeStyles';
 
 export default function HomeScreen({ navigation }) {
   return (

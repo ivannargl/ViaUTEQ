@@ -1,8 +1,9 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, Modal,Pressable,Platform,Image,useWindowDimensions} from 'react-native';
+import { React, useContext } from 'react';
+import { View, Text, TouchableOpacity, Modal, Pressable, Platform, Image, useWindowDimensions } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import styles from './styles/navStyles';
+import styles from '../../styles/navStyles';
+import { AuthContext } from '../../AuthContext';
 
 export default function Nav({
   infoRuta,
@@ -16,18 +17,27 @@ export default function Nav({
   const isTablet = width >= 600;
   const navigation = useNavigation();
   const route = useRoute();
+  const { cerrarSesion } = useContext(AuthContext);
 
   const esPantallaMapa = route.name === 'Mapa';
 
-  const manejarOpcionMenu = (opcion) => {
+  const manejarOpcionMenu = async (opcion) => {
     setMenuVisible(false);
+
     switch (opcion) {
       case 'Editar perfil':
         navigation.navigate('Perfil');
         break;
+
       case 'Cerrar sesión':
-        navigation.navigate('HomeScreen');
+        await cerrarSesion();
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeScreen' }],
+        });
         break;
+
+
       case 'Menú':
         navigation.navigate('MenuRutas');
         break;

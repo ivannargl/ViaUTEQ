@@ -1,33 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import {View,Text,FlatList,Image,TouchableOpacity,useWindowDimensions,Platform,StatusBar} from 'react-native';
-import { API_URL } from '../services/apiConfig';
-import Nav from '../screens/Nav';
-import styles from './styles/menuStyles';
-
+import { View, Text, FlatList, Image, TouchableOpacity, useWindowDimensions, Platform, StatusBar } from 'react-native';
+import { API_URL } from '../../services/apiConfig';
+import Nav from './Nav';
+import styles from '../../styles/menuStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function MenuRutas({ navigation }) {
   const { width } = useWindowDimensions();
   const itemWidth = (width - 30) / 2;
   const [menuVisible, setMenuVisible] = useState(false);
 
-  // Datos de usuario simulados
-  const nombreUsuario = 'Prueba';
-  const fotoPerfil = 'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true';
-  
-const [lugares, setLugares] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-//Llamar a la API para obtener los lugares
-useEffect(() => {
+  const [nombreUsuario, setNombreUsuario] = useState('Usuario');
+  const [fotoPerfil, setFotoPerfil] = useState(
+    'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true'
+  );
+
+  const [lugares, setLugares] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  //Cragar usario desde AsyncStorage
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      try {
+        const usuarioGuardado = await AsyncStorage.getItem('usuario');
+        if (usuarioGuardado) {
+          const usuario = JSON.parse(usuarioGuardado);
+          setNombreUsuario(usuario.nombre || 'Usuario');
+          setFotoPerfil(
+            usuario.foto_url ||
+            'https://raw.githubusercontent.com/FerRosas22/V-aUTEQ/main/profile.jpg?raw=true'
+          );
+        }
+      } catch (error) {
+        console.error('Error al cargar usuario:', error);
+      }
+    };
+
+    cargarUsuario();
+  }, []);
+
+  //Llamar a la API para obtener los lugares
+  useEffect(() => {
     const fetchLugares = async () => {
       try {
         setLoading(true);
         const response = await fetch(`${API_URL}/lugares`);
-        
+
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-        
+
         const data = await response.json();
         setLugares(data);
       } catch (err) {
@@ -67,7 +90,11 @@ useEffect(() => {
               onPress={() => navigation.navigate('Mapa', { lugar: item })}
             >
               <Image
-                source={{ uri: item.imagen }}
+                source={{
+                  uri: typeof item.image_URL === 'string' 
+                    ? item.image_URL.replace('localhost', '10.13.4.40') 
+                    : 'https://via.placeholder.com/150' 
+                }}
                 style={styles.image}
                 resizeMode="cover"
               />
